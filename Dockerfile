@@ -15,3 +15,4 @@ COPY ./app /code/app
 
 # 
 
+CMD ["uvicorn", "app.main:app"]
