@@ -1,8 +1,10 @@
 from typing import Optional
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
+
+from app import app
 
 fake_users_db = {
     "johndoe": {
@@ -21,9 +23,7 @@ fake_users_db = {
     },
 }
 
-app = FastAPI()
-
-
+# Encriptar contraseña 
 def fake_hash_password(password: str):
     return "fakehashed" + password
 
@@ -87,4 +87,4 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 @app.get("/users/me")
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
+  return current_user
