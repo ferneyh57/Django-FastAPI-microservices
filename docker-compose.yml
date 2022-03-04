@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - confd:/etc/nginx/conf.d
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+
+  nginx_fredrikson:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
+     
+    volumes:
+      - /home/pi/www:/usr/share/nginx/html:ro
+    environment:
+      - HOST=subdominio.ejemplo.com
+      - VIRTUAL_HOST=subdominio.ejemplo.com
+      - LETSENCRYPT_HOST=subdominio.ejemplo.com
+      - LETSENCRYPT_EMAIL=tumail@ejemplo.com
+
+  www2:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
+     
+    volumes:
+      - /home/pi/www2:/usr/share/nginx/html:ro
+    environment:
+      - HOST=subdominio.ejemplo.com
+      - VIRTUAL_HOST=subdominio2.ejemplo.com
+      - LETSENCRYPT_HOST=subdominio2.ejemplo.com
+      - LETSENCRYPT_EMAIL=tumail2@ejemplo.com 
+  fastapi:
+    build: .
+    restart: always
+    expose: 
+      - "8080"
+    ports:
+     - 8080:8080
+
+volumes:
+  certs:
+  html:
+  vhostd:
+  confd:
